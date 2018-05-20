@@ -1,5 +1,5 @@
-export enum PlaybackStatus {
-  PLAYING = 'Playing',
-  PAUSED = 'Paused',
-  STOPPED = 'Stopped',
+export const PlaybackStatus = {
+  PLAYING: 'Playing',
+  PAUSED: 'Paused',
+  STOPPED: 'Stopped',
 }

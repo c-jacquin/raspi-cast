@@ -1,6 +1,6 @@
-import { CastType } from '../enums/CastType';
+export type Type = 'youtubedl'
 
 export interface CastOptions {
-  type: CastType;
+  type: Type;
   data: string;
 }
