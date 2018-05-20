@@ -1,0 +1,4 @@
+export enum Errors {
+  YOUTUBEDL = 'YOUTUBEDL',
+  PLAYER_UNAVAILABLE = 'PLAYER_UNAVAILABLE',
+}
