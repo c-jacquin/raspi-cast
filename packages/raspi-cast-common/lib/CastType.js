@@ -1,3 +1,3 @@
-export const CastType = {
-  YOUTUBEDL: 'youtubedl',
-}
+module.exports = {
+  YOUTUBEDL: 'youtubedl'
+};

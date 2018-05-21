@@ -1,3 +1,5 @@
-export * from './lib/CastType';
-export * from './lib/Errors';
-export * from './lib/PlaybackStatus';
+module.exports = {
+  CastType: require('./lib/CastType'),
+  Errors: require('./lib/Errors'),
+  PlaybackStatus: require('./lib/PlaybackStatus')
+};

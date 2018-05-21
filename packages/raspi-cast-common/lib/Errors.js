@@ -1,4 +1,4 @@
-export const Errors = {
+module.exports = {
   UNSUPORTED_STREAM: 'unsuportedStream',
-  PLAYER_UNAVAILABLE: 'playerUnavailable',
-}
+  PLAYER_UNAVAILABLE: 'playerUnavailable'
+};

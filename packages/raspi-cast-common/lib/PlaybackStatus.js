@@ -1,5 +1,5 @@
-export const PlaybackStatus = {
+module.exports = {
   PLAYING: 'Playing',
   PAUSED: 'Paused',
-  STOPPED: 'Stopped',
-}
+  STOPPED: 'Stopped'
+};
