@@ -5,6 +5,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/charjac/raspi-cast-common/issues"
   },
-  "homepage": "https://github.com/charjac/raspi-cast-common#readme"
+  "homepage": "https://github.com/charjac/raspi-cast-common#readme",
+  "devDependencies": {
+    "typescript": "^2.8.3"
+  }
 }

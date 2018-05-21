@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "allowJs": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "rootDir": "./",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+  }
+}

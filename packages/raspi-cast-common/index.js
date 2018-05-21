@@ -1,5 +1,15 @@
-module.exports = {
-  CastType: require('./lib/CastType'),
-  Errors: require('./lib/Errors'),
-  PlaybackStatus: require('./lib/PlaybackStatus')
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CastType = {
+    YOUTUBEDL: 'youtubedl'
 };
+exports.Errors = {
+    UNSUPORTED_STREAM: 'unsuportedStream',
+    PLAYER_UNAVAILABLE: 'playerUnavailable'
+};
+exports.PlaybackStatus = {
+    PLAYING: 'Playing',
+    PAUSED: 'Paused',
+    STOPPED: 'Stopped'
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJpbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztBQUFhLFFBQUEsUUFBUSxHQUFHO0lBQ3RCLFNBQVMsRUFBRSxXQUFXO0NBQ3ZCLENBQUM7QUFFVyxRQUFBLE1BQU0sR0FBRztJQUNwQixpQkFBaUIsRUFBRSxrQkFBa0I7SUFDckMsa0JBQWtCLEVBQUUsbUJBQW1CO0NBQ3hDLENBQUM7QUFFVyxRQUFBLGNBQWMsR0FBRztJQUM1QixPQUFPLEVBQUUsU0FBUztJQUNsQixNQUFNLEVBQUUsUUFBUTtJQUNoQixPQUFPLEVBQUUsU0FBUztDQUNuQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGNvbnN0IENhc3RUeXBlID0ge1xuICBZT1VUVUJFREw6ICd5b3V0dWJlZGwnXG59O1xuXG5leHBvcnQgY29uc3QgRXJyb3JzID0ge1xuICBVTlNVUE9SVEVEX1NUUkVBTTogJ3Vuc3Vwb3J0ZWRTdHJlYW0nLFxuICBQTEFZRVJfVU5BVkFJTEFCTEU6ICdwbGF5ZXJVbmF2YWlsYWJsZSdcbn07XG5cbmV4cG9ydCBjb25zdCBQbGF5YmFja1N0YXR1cyA9IHtcbiAgUExBWUlORzogJ1BsYXlpbmcnLFxuICBQQVVTRUQ6ICdQYXVzZWQnLFxuICBTVE9QUEVEOiAnU3RvcHBlZCdcbn07XG4iXX0=
