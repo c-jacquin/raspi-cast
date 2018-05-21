@@ -1,5 +1,8 @@
+export type TypeKey = 'YOUTUBEDL';
 export type Type = 'youtubedl';
-export type Error = 'youtubeDl' | 'playerUnavailable';
+export type ErrorKey = 'UNSUPORTED_STREAM' | 'PLAYER_UNAVAILABLE'
+export type Error = 'unsuportedStream' | 'playerUnavailable';
+export type PlaybackKey = 'PLAYING' | 'PAUSED' | 'STOPPED';
 export type Playback = 'Playing' | 'Paused' | 'Stopped';
 
 export interface CastMeta {
@@ -26,6 +29,6 @@ export interface InitialState {
   volume?: number;
 }
 
-export const CastType: Record<string, Type>;
-export const Errors: Record<string, Error>;
-export const PlaybackStatus: Record<string, Playback>
+export const CastType: Record<TypeKey, Type>;
+export const Errors: Record<ErrorKey, Error>;
+export const PlaybackStatus: Record<PlaybackKey, Playback>

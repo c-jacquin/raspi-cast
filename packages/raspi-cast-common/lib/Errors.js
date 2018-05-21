@@ -1,4 +1,4 @@
 export const Errors = {
-  YOUTUBEDL: 'youtubeDl',
+  UNSUPORTED_STREAM: 'unsuportedStream',
   PLAYER_UNAVAILABLE: 'playerUnavailable',
 }
