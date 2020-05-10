@@ -1,5 +1,5 @@
 import { createStore } from 'lenrix';
-import { PlaybackStatus } from 'raspi-cast-common';
+import { PlaybackStatus } from '@raspi-cast/core';
 import { fromEvent, merge } from 'rxjs';
 import { delay, filter, tap } from 'rxjs/operators';
 import io from 'socket.io-client';

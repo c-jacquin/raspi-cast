@@ -1,4 +1,4 @@
-import { CastMeta, CastOptions } from 'raspi-cast-common';
+import { CastMeta, CastOptions } from '@raspi-cast/core';
 
 export interface State {
   meta?: CastMeta;

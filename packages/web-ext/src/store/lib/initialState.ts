@@ -1,4 +1,4 @@
-import { PlaybackStatus } from 'raspi-cast-common';
+import { PlaybackStatus } from '@raspi-cast/core';
 import { State } from './types';
 
 export const initialState: State = {

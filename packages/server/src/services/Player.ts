@@ -3,8 +3,7 @@ import dbus, { Variant } from 'dbus-next';
 import path from 'path';
 import { Subject } from 'rxjs';
 
-import { PlaybackStatus } from '../enums/PlaybackStatus';
-import { PlayerState } from '../types/PlayerState';
+import { PlaybackStatus, PlayerState } from '@raspi-cast/core';
 
 const spinner = path.join(process.cwd(), 'assets/loading-screen.mp4');
 

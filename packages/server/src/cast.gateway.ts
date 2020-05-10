@@ -16,11 +16,13 @@ import { Socket } from 'socket.io';
 import { Player } from './services/Player';
 import { Screen } from './services/Screen';
 import { YoutubeDl } from './services/YoutubeDl';
-import { CastType } from './enums/CastType';
-import { PlaybackStatus } from './enums/PlaybackStatus';
-import { CastClient } from './types/CastClient';
-import { CastOptions } from './types/CastOptions';
-import { InitialState } from './types/Socket';
+import {
+  CastType,
+  PlaybackStatus,
+  CastClient,
+  CastOptions,
+  InitialState,
+} from '@raspi-cast/core';
 
 @WebSocketGateway()
 export class CastSocket implements OnGatewayConnection, OnGatewayDisconnect {

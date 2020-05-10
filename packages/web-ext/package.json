@@ -2,7 +2,7 @@
   "name": "@raspi-cast/web-ext",
   "version": "0.0.0",
   "description": "Firefox addon for the cast software, allowing videos to be cast from Firefox to a Raspberry Pi running the picast server.",
-  "license": "GNU",
+  "license": "GPL-3.0-or-later",
   "author": {
     "name": "Charles Jacquin",
     "email": "charles.jacquin@gmail.com"
@@ -12,13 +12,13 @@
   },
   "homepage": "https://github.com/charjac/raspi-cast-web-ext",
   "dependencies": {
+    "@raspi-cast/core": "0.0.0",
     "autobind-decorator": "^2.1.0",
     "glamor": "^2.20.40",
     "glamorous": "^4.13.0",
     "immutable-lens": "^0.3.1",
     "lenrix": "^0.4.0",
     "material-icons": "^0.2.3",
-    "raspi-cast-common": "https://github.com/charjac/raspi-cast-common.git#master",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-intl": "^2.4.0",

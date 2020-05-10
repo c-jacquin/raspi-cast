@@ -1,5 +1,5 @@
 import glamorous from 'glamorous';
-import { CastType } from 'raspi-cast-common';
+import { CastType } from '@raspi-cast/core';
 import React from 'react';
 import { componentFromStream } from 'recompose';
 import { map } from 'rxjs/operators';
