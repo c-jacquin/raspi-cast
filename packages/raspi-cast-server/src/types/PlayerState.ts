@@ -4,6 +4,7 @@ export interface PlayerState {
   isPending: boolean;
   volume?: number;
   isPlaying: boolean;
+  isStarted: boolean;
   meta?: CastMeta;
   castId?: string;
   locked?: boolean;

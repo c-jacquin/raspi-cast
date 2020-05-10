@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { CastSocket } from './cast.gateway';
-import { Player } from './components/Player';
-import { Screen } from './components/Screen';
-import { YoutubeDl } from './components/YoutubeDl';
+import { Player } from './services/Player';
+import { Screen } from './services/Screen';
+import { YoutubeDl } from './services/YoutubeDl';
 
 @Module({
-  components: [CastSocket, Screen, Player, YoutubeDl],
+  providers: [CastSocket, Screen, Player, YoutubeDl],
 })
 export class CastModule {}

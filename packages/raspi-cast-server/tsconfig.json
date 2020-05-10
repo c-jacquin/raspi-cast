@@ -3,10 +3,7 @@
     "target": "es2016",
     "module": "commonjs",
     "lib": [
-      "es2016",
-      "es2017",
-      "esnext",
-      "dom"
+      "esnext"
     ],
     "outDir": "dist",
     "allowJs": true,
@@ -25,12 +22,7 @@
     "rootDir": "./src",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "typeRoots": [
-      "./node_modules/json-d-ts",
-      "typings"
-    ]
+    "resolveJsonModule": true
   },
   "include": [
     "src"

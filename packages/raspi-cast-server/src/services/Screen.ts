@@ -1,8 +1,8 @@
-import { Component } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { spawn } from 'child_process';
 import { address } from 'ip';
 
-@Component()
+@Injectable()
 export class Screen {
   public clear() {
     console.log('\u001B[2J');
@@ -19,7 +19,7 @@ export class Screen {
       'Cast IP Address\n' + address().replace(/\./g, ' . '),
     ]);
 
-    figlet.stdout.on('data', data => {
+    figlet.stdout.on('data', (data) => {
       console.log(`${data}`);
       newLineCount += (String(data).match(/\n/g) || []).length;
     });

@@ -9,13 +9,13 @@ import {
 import autobind from 'autobind-decorator';
 
 import { forkJoin, from, interval, Observable, of } from 'rxjs';
-import { delay, filter, map, switchMap, tap } from 'rxjs/operators';
+import { delay, filter, map, switchMap } from 'rxjs/operators';
 import { Socket } from 'socket.io';
 // import uuid from 'uuid';
 
-import { Player } from './components/Player';
-import { Screen } from './components/Screen';
-import { YoutubeDl } from './components/YoutubeDl';
+import { Player } from './services/Player';
+import { Screen } from './services/Screen';
+import { YoutubeDl } from './services/YoutubeDl';
 import { CastType } from './enums/CastType';
 import { PlaybackStatus } from './enums/PlaybackStatus';
 import { CastClient } from './types/CastClient';
@@ -44,10 +44,10 @@ export class CastSocket implements OnGatewayConnection, OnGatewayDisconnect {
     const address = socket.request.connection.remoteAddress;
     const subscription = interval(1000)
       .pipe(
-        filter(() => this.player.isPlaying() && !this.player.state.isPending),
+        filter(() => this.player.isPlaying() && !this.player.isPending()),
         switchMap(() => this.player.getPosition()),
       )
-      .subscribe(position => socket.emit('position', position));
+      .subscribe((position) => socket.emit('position', position));
 
     this.clients.push({
       socket,
@@ -68,15 +68,13 @@ export class CastSocket implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('initialState')
-  public handleInitialState(
-    client: Socket,
-  ): Observable<WsResponse<InitialState>> {
+  public handleInitialState(): Observable<WsResponse<InitialState>> {
     const data: any = {
       isPending: false,
       status: PlaybackStatus.STOPPED,
       meta: this.player.getMeta(),
     };
-    return !!this.player.omx && this.player.omx.running
+    return this.player.isStarted()
       ? from(this.player.getStatus()).pipe(
           switchMap(({ status }) => {
             const actions = [of({ status })];
@@ -86,7 +84,7 @@ export class CastSocket implements OnGatewayConnection, OnGatewayDisconnect {
             }
             return forkJoin(actions);
           }),
-          map(results =>
+          map((results) =>
             results.reduce(
               (acc, result) => ({
                 ...acc,
@@ -95,19 +93,16 @@ export class CastSocket implements OnGatewayConnection, OnGatewayDisconnect {
               data,
             ),
           ),
-          map(state => ({ event: 'initialState', data: state })),
+          map((state) => ({ event: 'initialState', data: state })),
         )
       : of({ event: 'initialState', data });
   }
 
   @SubscribeMessage('cast')
-  public handleCast(
-    client: Socket,
-    options: CastOptions,
-  ): Observable<WsResponse<InitialState>> {
+  public handleCast(client: Socket, options: CastOptions): Observable<any> {
     this.notifyStatusChange(PlaybackStatus.STOPPED);
 
-    return from(this.player.init(undefined, true, 'both', true)).pipe(
+    return from(this.player.init()).pipe(
       switchMap(() => {
         switch (options.type) {
           case CastType.YOUTUBEDL:
@@ -118,8 +113,8 @@ export class CastSocket implements OnGatewayConnection, OnGatewayDisconnect {
       // tap(() => this.screen.clear()),
       switchMap(({ url }) => this.player.init(url)),
       delay(5000),
-      tap(() => (this.player.state.isPlaying = true)),
-      switchMap(() => this.handleInitialState(client)),
+      // tap(() => (this.player.state.isPlaying = true)),
+      // switchMap(() => this.handleInitialState(client)),
     );
   }
 
@@ -177,7 +172,7 @@ export class CastSocket implements OnGatewayConnection, OnGatewayDisconnect {
   // }
 
   private notifyStatusChange(status: PlaybackStatus): void {
-    this.clients.forEach(client => {
+    this.clients.forEach((client) => {
       client.socket.emit('status', { status });
     });
   }

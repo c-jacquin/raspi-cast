@@ -1,12 +1,13 @@
-import { Component, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import youtubeDl from 'youtube-dl';
 
 import { CastMeta } from '../types/CastMeta';
 import { Player } from './Player';
 
-@Component()
+@Injectable()
 export class YoutubeDl {
   constructor(@Inject(Player) private player: Player) {}
+
   public getInfo(video: any): Promise<CastMeta> {
     return new Promise((resolve, reject) => {
       youtubeDl.getInfo(
@@ -16,12 +17,12 @@ export class YoutubeDl {
           if (err) {
             reject(err);
           } else {
-            this.player.state.meta = {
+            this.player.setMeta({
               title: result.title,
               description: result.description,
               thumbnail: result.thumbnail,
               url: result.url,
-            };
+            });
             resolve(result);
           }
         },
