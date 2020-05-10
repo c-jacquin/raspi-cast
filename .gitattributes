@@ -1,0 +1,4 @@
+* text eol=lf
+
+packages/server/assets/** binary
+packages/web-ext/public/icons/** binary

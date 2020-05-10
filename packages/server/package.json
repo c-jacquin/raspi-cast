@@ -1,6 +1,6 @@
 {
-  "name": "raspi-cast-server",
-  "version": "0.0.0-development",
+  "name": "@raspi-cast/server",
+  "version": "0.0.0",
   "description": "Node.js app wich allow a web-extension to control omxplayer via a socket.io gateway.",
   "main": "server.js",
   "scripts": {
