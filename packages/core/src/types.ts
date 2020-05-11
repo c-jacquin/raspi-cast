@@ -1,19 +1,11 @@
-import { Subscription } from 'rxjs';
-import { Socket } from 'socket.io';
-
-import { CastType } from './enum';
-
-export interface CastClient {
-  address: string;
-  socket: Socket;
-  subscription: Subscription;
-}
+import { CastType, PlaybackStatus } from './enum';
 
 export interface CastMeta {
   title: string;
   description: string;
   thumbnail: string;
   url: string;
+  duration: number;
 }
 
 export interface CastOptions {
@@ -23,23 +15,10 @@ export interface CastOptions {
 
 export interface PlayerState {
   isPending: boolean;
+  canPlay: boolean;
+  canSeek: boolean;
+  playbackStatus?: PlaybackStatus;
   volume?: number;
-  isPlaying: boolean;
-  isStarted: boolean;
   meta?: CastMeta;
-  castId?: string;
-  locked?: boolean;
-  masterAdress?: string;
-}
-
-export interface InitialState {
-  isPending: boolean;
-  status: string;
-  meta: {
-    title: string;
-    description: string;
-    thumbnail: string;
-  };
-  duration?: number;
-  volume?: number;
+  position?: number;
 }

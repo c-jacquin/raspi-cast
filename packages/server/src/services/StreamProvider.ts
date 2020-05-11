@@ -1,14 +1,10 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { CastMeta, CastType, CastOptions } from '@raspi-cast/core';
 import youtubeDl from 'youtube-dl';
 
-import { CastMeta } from '../types/CastMeta';
-import { Player } from './Player';
-
 @Injectable()
-export class YoutubeDl {
-  constructor(@Inject(Player) private player: Player) {}
-
-  public getInfo(video: any): Promise<CastMeta> {
+class StreamProvider {
+  private youtube(video: any): Promise<CastMeta> {
     return new Promise((resolve, reject) => {
       youtubeDl.getInfo(
         video,
@@ -17,16 +13,27 @@ export class YoutubeDl {
           if (err) {
             reject(err);
           } else {
-            this.player.setMeta({
+            console.log(result);
+            resolve({
               title: result.title,
               description: result.description,
               thumbnail: result.thumbnail,
               url: result.url,
+              duration: result._duration_raw,
             });
-            resolve(result);
           }
         },
       );
     });
   }
+
+  public async getStreamUrl({ type, data }: CastOptions) {
+    switch (type) {
+      case CastType.YOUTUBEDL:
+      default:
+        return this.youtube(data);
+    }
+  }
 }
+
+export default StreamProvider;

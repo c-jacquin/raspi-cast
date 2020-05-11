@@ -4,178 +4,70 @@ import {
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
-  WsResponse,
 } from '@nestjs/websockets';
-import autobind from 'autobind-decorator';
-
-import { forkJoin, from, interval, Observable, of } from 'rxjs';
-import { delay, filter, map, switchMap } from 'rxjs/operators';
+import { CastOptions, Events } from '@raspi-cast/core';
 import { Socket } from 'socket.io';
-// import uuid from 'uuid';
 
-import { Player } from './services/Player';
-import { Screen } from './services/Screen';
-import { YoutubeDl } from './services/YoutubeDl';
-import {
-  CastType,
-  PlaybackStatus,
-  CastClient,
-  CastOptions,
-  InitialState,
-} from '@raspi-cast/core';
+import Player from './services/Player';
+import Sockets from './services/Sockets';
+import StreamProvider from './services/StreamProvider';
 
 @WebSocketGateway()
-export class CastSocket implements OnGatewayConnection, OnGatewayDisconnect {
-  private clients: CastClient[] = [];
-
+class CastGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
-    @Inject(Screen) private screen: Screen,
     @Inject(Player) private player: Player,
-    @Inject(YoutubeDl) private youtubeDl: YoutubeDl,
-  ) {
-    this.player.close$.subscribe(() => {
-      this.notifyStatusChange(PlaybackStatus.STOPPED);
-      if (process.env.NODE_ENV === 'production') {
-        this.screen.printIp();
-      }
-    });
-  }
+    @Inject(StreamProvider) private streamProvider: StreamProvider,
+    @Inject(Sockets) private sockets: Sockets,
+  ) {}
 
-  @autobind
-  public handleConnection(socket: Socket) {
-    const address = socket.request.connection.remoteAddress;
-    const subscription = interval(1000)
-      .pipe(
-        filter(() => this.player.isPlaying() && !this.player.isPending()),
-        switchMap(() => this.player.getPosition()),
-      )
-      .subscribe((position) => socket.emit('position', position));
+  public async handleConnection(socket: Socket) {
+    this.sockets.addClient(socket);
 
-    this.clients.push({
-      socket,
-      address,
-      subscription,
+    socket.send(Events.INITIAL_STATE, {
+      ...this.player.getState(),
+      position: await this.player.getPosition(),
     });
   }
 
   public handleDisconnect(socket: Socket) {
-    const client = this.clients.find(
-      ({ address }) => address === socket.request.connection.remoteAddress,
-    );
-
-    if (client) {
-      client.subscription.unsubscribe();
-      this.clients.splice(this.clients.indexOf(client), 1);
-    }
+    this.sockets.removeClient(socket);
   }
 
-  @SubscribeMessage('initialState')
-  public handleInitialState(): Observable<WsResponse<InitialState>> {
-    const data: any = {
-      isPending: false,
-      status: PlaybackStatus.STOPPED,
-      meta: this.player.getMeta(),
-    };
-    return this.player.isStarted()
-      ? from(this.player.getStatus()).pipe(
-          switchMap(({ status }) => {
-            const actions = [of({ status })];
-            if (status === PlaybackStatus.PLAYING.toString()) {
-              actions.push(from(this.player.getDuration()));
-              actions.push(from(this.player.getVolume()));
-            }
-            return forkJoin(actions);
-          }),
-          map((results) =>
-            results.reduce(
-              (acc, result) => ({
-                ...acc,
-                ...result,
-              }),
-              data,
-            ),
-          ),
-          map((state) => ({ event: 'initialState', data: state })),
-        )
-      : of({ event: 'initialState', data });
+  @SubscribeMessage(Events.CAST)
+  public async handleCast(client: Socket, options: CastOptions): Promise<void> {
+    this.player.loadSpinner();
+
+    const meta = await this.streamProvider.getStreamUrl(options);
+
+    this.player.loadStream(meta);
+
+    this.sockets.sendAll(Events.META, meta);
   }
 
-  @SubscribeMessage('cast')
-  public handleCast(client: Socket, options: CastOptions): Observable<any> {
-    this.notifyStatusChange(PlaybackStatus.STOPPED);
-
-    return from(this.player.init()).pipe(
-      switchMap(() => {
-        switch (options.type) {
-          case CastType.YOUTUBEDL:
-          default:
-            return this.youtubeDl.getInfo(options.data);
-        }
-      }),
-      // tap(() => this.screen.clear()),
-      switchMap(({ url }) => this.player.init(url)),
-      delay(5000),
-      // tap(() => (this.player.state.isPlaying = true)),
-      // switchMap(() => this.handleInitialState(client)),
-    );
+  @SubscribeMessage(Events.PLAY)
+  public handlePlay() {
+    this.player.play();
   }
 
-  @SubscribeMessage('play')
-  public async handlePlay(): Promise<void> {
-    await this.player.play();
-    this.notifyStatusChange(PlaybackStatus.PLAYING);
+  @SubscribeMessage(Events.PAUSE)
+  public handlePause() {
+    this.player.pause();
   }
 
-  @SubscribeMessage('pause')
-  public async handlePause(): Promise<void> {
-    await this.player.pause();
-    this.notifyStatusChange(PlaybackStatus.PAUSED);
+  @SubscribeMessage(Events.STOP)
+  public handleQuit() {
+    this.player.stop();
   }
 
-  @SubscribeMessage('quit')
-  public async handleQuit(): Promise<void> {
-    await this.player.quit();
-    this.notifyStatusChange(PlaybackStatus.STOPPED);
+  @SubscribeMessage(Events.SEEK)
+  public handleSeek(client: Socket, data: string): void {
+    this.player.seek(parseFloat(data));
   }
 
-  @SubscribeMessage('seek')
-  public handleSeek(
-    client: Socket,
-    data: string,
-  ): Observable<WsResponse<{ isSeeking: boolean }>> {
-    return from(this.player.setPosition(Number(data))).pipe(
-      map(() => ({ event: 'seek', data: { isSeeking: false } })),
-    );
-  }
-
-  @SubscribeMessage('volume')
+  @SubscribeMessage(Events.VOLUME)
   public handleVolume(client: Socket, data: string): void {
     this.player.setVolume(parseFloat(data));
   }
-
-  @SubscribeMessage('volume+')
-  public handleIncreaseVolume(): void {
-    this.player.increaseVolume();
-  }
-
-  @SubscribeMessage('volume-')
-  public handleDecreaseVolume(): void {
-    this.player.decreaseVolume();
-  }
-
-  // @SubscribeMessage('showSubtitles')
-  // public handleShowSubtitles(): Observable<WsResponse<any>> {
-  //   return from(this.player.omx.showSubtitles());
-  // }
-
-  // @SubscribeMessage('hideSubtitles')
-  // public handleHideSubtitles(): Observable<WsResponse<any>> {
-  //   return from(this.player.omx.showSubtitles());
-  // }
-
-  private notifyStatusChange(status: PlaybackStatus): void {
-    this.clients.forEach((client) => {
-      client.socket.emit('status', { status });
-    });
-  }
 }
+
+export default CastGateway;

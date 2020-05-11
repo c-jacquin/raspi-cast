@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 import { address } from 'ip';
 
 @Injectable()
-export class Screen {
+class Screen {
   public clear() {
     console.log('\u001B[2J');
   }
@@ -30,3 +30,5 @@ export class Screen {
     });
   }
 }
+
+export default Screen;
