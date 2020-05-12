@@ -1,45 +1,43 @@
+import { PlaybackStatus, Events } from '@raspi-cast/core';
 import { createStore } from 'lenrix';
-import { PlaybackStatus } from '@raspi-cast/core';
 import { fromEvent, merge } from 'rxjs';
-import { delay, filter, tap } from 'rxjs/operators';
+import { filter, tap } from 'rxjs/operators';
 import io from 'socket.io-client';
 
-import intl from '../helpers/i18n';
 import { initialState } from './lib/initialState';
 import { Actions, State } from './lib/types';
 let socket: any;
 
 export const store = createStore<State>(initialState)
   .actionTypes<Actions>()
-  .updates(lens => ({
-    setState: update => lens.setFields(update),
-    error: error => lens.setFields({ error, isPending: false }),
-    volume: volume => lens.focusPath('volume').setValue(volume),
+  .updates((lens) => ({
+    setState: (update) => lens.setFields(update),
+    error: () => lens.setFields({ isPending: false }),
+    volume: (volume) => lens.focusPath('volume').setValue(volume),
     cast: () => lens.focusPath('isPending').setValue(true),
     initialState: () => lens.focusPath('isPending').setValue(true),
-    seek: () => lens.focusPath('isSeeking').setValue(true),
   }))
-  .compute(({ status }) => ({
-    isPlaying: status === PlaybackStatus.PLAYING,
-    isStopped: status === PlaybackStatus.STOPPED,
+  .compute(({ playbackStatus }) => ({
+    isPlaying: playbackStatus === PlaybackStatus.PLAYING,
+    isStopped: playbackStatus === PlaybackStatus.STOPPED,
   }))
   .sideEffects({
-    cast: castOptions => socket.emit('cast', castOptions),
-    play: () => socket.emit('play'),
-    pause: () => socket.emit('pause'),
-    volume: volume => socket.emit('volume', volume),
-    seek: position => socket.emit('seek', position),
-    quit: () => socket.emit('quit'),
+    cast: (castOptions) => socket.emit(Events.CAST, castOptions),
+    play: () => socket.emit(Events.PLAY),
+    pause: () => socket.emit(Events.PAUSE),
+    volume: (volume) => socket.emit(Events.VOLUME, volume),
+    seek: (position) => socket.emit(Events.SEEK, position),
+    stop: () => socket.emit(Events.STOP),
 
-    error: err => {
-      if (store.currentState.notification) {
-        browser.notifications.create('error', {
-          title: intl.formatMessage({ id: 'error.notification' }),
-          message: err,
-          type: 'basic',
-          iconUrl: browser.extension.getURL('icons/ic_cast_3x.png'),
-        });
-      }
+    error: () => {
+      // if (store.currentState.notification) {
+      //   browser.notifications.create('error', {
+      //     title: 'Error',
+      //     message: err,
+      //     type: 'basic',
+      //     iconUrl: browser.extension.getURL('icons/ic_cast_3x.png'),
+      //   });
+      // }
     },
   });
 
@@ -47,17 +45,19 @@ store
   .pluck('castIp')
   .pipe(
     filter(Boolean),
-    tap(castIp => {
-      socket = io(`http://${castIp}:${process.env.REACT_APP_SOCKET_PORT}`);
-      fromEvent(socket, 'fail').subscribe(err =>
-        store.dispatch({ error: intl.formatMessage({ id: `error.${err}` }) }),
+    tap((castIp) => {
+      socket = io(`http://${castIp}:8181`);
+      fromEvent(socket, 'fail').subscribe((err: string) =>
+        store.dispatch({ error: err }),
       );
 
       merge(
-        fromEvent(socket, 'initialState'),
-        fromEvent(socket, 'status'),
-        fromEvent(socket, 'position'),
-        fromEvent(socket, 'seek').pipe(delay(4000)),
+        fromEvent(socket, Events.CAN_PLAY),
+        fromEvent(socket, Events.CAN_SEEK),
+        fromEvent(socket, Events.INITIAL_STATE),
+        fromEvent(socket, Events.PLAYBACK_STATUS),
+        fromEvent(socket, Events.SEEK),
+        fromEvent(socket, Events.VOLUME),
       ).subscribe((updates: any) => store.dispatch({ setState: updates }));
 
       socket.emit('initialState');

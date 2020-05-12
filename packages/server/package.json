@@ -9,6 +9,7 @@
     "dev": "NODE_ENV=development ts-node src/main.ts",
     "lint": "eslint src/**/*.ts --fix",
     "build": "tsc",
+    "postbuild": "shx cp package.json dist && shx cp ecosystem.config.js dist && shx cp yarn.lock dist",
     "deploy:setup": "pm2 deploy ecosystem.config.js production setup",
     "deploy": "pm2 deploy ecosystem.config.js production update",
     "start": "pm2 start ecosystem.config.js --env production",
@@ -43,7 +44,6 @@
     "ip": "^1.1.5",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.5",
-    "rxjs-compat": "^6.5.5",
     "uuid": "^8.0.0",
     "youtube-dl": "^3.0.2"
   },
@@ -65,10 +65,5 @@
     "prettier": "^2.0.5",
     "ts-node": "^8.10.1",
     "typescript": "^3.8.3"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix"
-    ]
   }
 }

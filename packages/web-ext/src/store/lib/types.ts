@@ -1,30 +1,18 @@
-import { CastMeta, CastOptions } from '@raspi-cast/core';
+import { PlayerState, CastOptions } from '@raspi-cast/core';
 
-export interface State {
-  meta?: CastMeta;
-  status: string;
-  isReady: boolean;
-  isPending: boolean;
-  isSeeking: boolean;
-  notification: boolean;
-  pageUrl: string;
-  error?: string;
-  duration: number;
-  position: number;
-  maxVolume: number;
-  minVolume: number;
-  volume: number;
-  muted: boolean;
-  positionPending: boolean;
+export interface State extends PlayerState {
   castIp?: string;
+  pageUrl?: string;
   theme?: string;
+  notification?: boolean;
+  isReady?: boolean;
 }
 
 export interface Actions {
   cast: CastOptions;
   play: void;
   pause: void;
-  quit: void;
+  stop: void;
   seek: number;
   volume: number;
   error: string;

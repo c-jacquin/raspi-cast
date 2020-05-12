@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const localEnvPath = path.join(process.cwd(), 'env/local.env');
+const localEnvPath = path.join(process.cwd(), '.env');
 const localEnv = `RASPI_IP=***.***.***.***
 
 `;

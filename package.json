@@ -1,10 +1,39 @@
 {
   "name": "raspi-cast",
   "private": true,
+  "author": {
+    "name": "Charles Jacquin",
+    "email": "charles.jacquin@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/charjac/raspi-cast/issues"
+  },
+  "homepage": "https://github.com/charjac/raspi-cast",
+  "workspaces": [
+    "packages/*"
+ ],
   "scripts": {
-    "install": "lerna bootstrap"
+    "install": "lerna bootstrap --use-workspaces",
+    "build": "lerna run build",
+    "dev": "lerna run dev"
   },
   "devDependencies": {
-    "lerna": "^3.20.2"
+    "@types/node": "^13.13.5",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
+    "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "husky": "^4.2.5",
+    "lerna": "^3.20.2",
+    "lint-staged": "^10.2.2",
+    "prettier": "^2.0.5",
+    "shx": "^0.3.2",
+    "typescript": "^3.8.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ]
   }
 }
