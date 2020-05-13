@@ -23,8 +23,6 @@ const ProgressFill = styled.div`
 
 const Timer = styled.span`
   position: absolute;
-  /* margin-left: auto;
-  margin-right: auto; */
   color: var(--text);
   z-index: 100000000;
   left: 4px;

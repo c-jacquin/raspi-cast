@@ -14,6 +14,7 @@ export const store = createStore<State>(initialState)
     setState: (update) => lens.setFields(update),
     cast: () => lens.focusPath('isPending').setValue(true),
     seek: (position) => lens.focusPath('position').setValue(position),
+    stop: () => lens.focusPath('position').setValue(0),
   }))
   .compute(({ playbackStatus }) => ({
     isPlaying: playbackStatus === PlaybackStatus.PLAYING,
