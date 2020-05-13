@@ -1,5 +1,6 @@
 export enum CastType {
   YOUTUBEDL = 'youtubedl',
+  LOCAL = 'local'
 }
 
 export enum Errors {
@@ -24,5 +25,6 @@ export enum Events {
   META = 'meta',
   SEEK = 'seek',
   STOP = 'stop',
-  VOLUME = 'volume'
+  VOLUME = 'volume',
+  POSITION = 'position',
 }

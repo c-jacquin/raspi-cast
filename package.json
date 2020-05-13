@@ -11,11 +11,12 @@
   "homepage": "https://github.com/charjac/raspi-cast",
   "workspaces": [
     "packages/*"
- ],
+  ],
   "scripts": {
     "install": "lerna bootstrap --use-workspaces",
-    "build": "lerna run build",
-    "dev": "lerna run dev"
+    "build": "lerna run build -- stream",
+    "dev": "lerna run dev --stream",
+    "firefox": "lerna run dev:firefox --stream"
   },
   "devDependencies": {
     "@types/node": "^13.13.5",

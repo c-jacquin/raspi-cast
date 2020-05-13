@@ -26,7 +26,6 @@ class Player {
   private player: dbus.ClientInterface;
   private properties: dbus.ClientInterface;
   private state: PlayerState = {
-    isPending: false,
     canPlay: false,
     canSeek: false,
   };
@@ -57,6 +56,7 @@ class Player {
       ) {
         this.screen.printIp();
       }
+
       switch (prop) {
         case 'PlaybackStatus':
         case 'Volume':
@@ -68,7 +68,12 @@ class Player {
             [formattedProp]: changed[prop].value,
           });
 
-          this.sockets.sendAll(formattedProp, changed[prop].value);
+          this.sockets.sendAll(formattedProp, {
+            [formattedProp]: changed[prop].value,
+          });
+          break;
+        case 'Metadata':
+          this.state.trackId = changed[prop].value['mpris:trackid'].value;
           break;
       }
     }
@@ -99,7 +104,9 @@ class Player {
       'Position',
     );
 
-    return position.value;
+    this.state.position = parseInt(position.value) / 1000 / 1000;
+
+    return this.state.position;
   }
 
   public setVolume(volume: number): Promise<void> {
@@ -132,11 +139,9 @@ class Player {
   }
 
   public seek(position: number): void {
-    this.state.canSeek && this.player.Seek(position);
-  }
-
-  public isPending(): boolean {
-    return this.state.isPending;
+    if (this.state.position) {
+      this.player.SetPosition(this.state.trackId, position * 1000 * 1000);
+    }
   }
 
   public isPlaying() {

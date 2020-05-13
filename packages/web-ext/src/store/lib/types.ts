@@ -1,15 +1,13 @@
-import { PlayerState, CastOptions } from '@raspi-cast/core';
+import { PlayerState } from '@raspi-cast/core';
 
 export interface State extends PlayerState {
   castIp?: string;
   pageUrl?: string;
-  theme?: string;
-  notification?: boolean;
-  isReady?: boolean;
+  isPending: boolean;
 }
 
 export interface Actions {
-  cast: CastOptions;
+  cast: void;
   play: void;
   pause: void;
   stop: void;

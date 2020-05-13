@@ -14,9 +14,9 @@ export interface CastOptions {
 }
 
 export interface PlayerState {
-  isPending: boolean;
   canPlay: boolean;
   canSeek: boolean;
+  trackId?: string;
   playbackStatus?: PlaybackStatus;
   volume?: number;
   meta?: CastMeta;

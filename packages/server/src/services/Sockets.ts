@@ -15,7 +15,7 @@ class Sockets {
 
   public sendAll(event: string, data: any) {
     this.clients.forEach((socket) => {
-      socket.send(event, data);
+      socket.emit(event, data);
     });
   }
 }

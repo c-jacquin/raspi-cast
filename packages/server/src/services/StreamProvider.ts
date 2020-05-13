@@ -13,7 +13,6 @@ class StreamProvider {
           if (err) {
             reject(err);
           } else {
-            console.log(result);
             resolve({
               title: result.title,
               description: result.description,
