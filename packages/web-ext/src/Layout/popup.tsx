@@ -10,8 +10,8 @@ import useObservable from '../hooks/use-observable';
 import { store } from '../store';
 
 const PopupLayout = () => {
-  const { castIp, meta, position, canPlay, isPending } = useObservable(
-    store.pick('castIp', 'meta', 'position', 'isPending', 'canPlay'),
+  const { castIp, meta, position, canPlay, isPending, error } = useObservable(
+    store.pick('castIp', 'meta', 'position', 'isPending', 'canPlay', 'error'),
   );
 
   const handleSeek = useCallback(
@@ -24,7 +24,19 @@ const PopupLayout = () => {
   );
 
   if (!castIp) {
-    return <div>no castIp</div>;
+    return (
+      <PopupContainer>
+        <p>Go to the options and enter your raspi cast server ip</p>
+      </PopupContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <PopupContainer>
+        <p>Error: {error}</p>
+      </PopupContainer>
+    );
   }
 
   return (

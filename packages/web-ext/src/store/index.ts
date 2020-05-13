@@ -15,6 +15,7 @@ export const store = createStore<State>(initialState)
     cast: () => lens.focusPath('isPending').setValue(true),
     seek: (position) => lens.focusPath('position').setValue(position),
     stop: () => lens.focusPath('position').setValue(0),
+    error: (error) => lens.focusPath('error').setValue(error),
   }))
   .compute(({ playbackStatus }) => ({
     isPlaying: playbackStatus === PlaybackStatus.PLAYING,
@@ -49,6 +50,17 @@ export const store = createStore<State>(initialState)
     },
   });
 
+const handleError = (error: any) => {
+  console.error(error);
+  store.dispatch({ error });
+};
+
+const handleConnectionError = () => {
+  const error = new Error('Impossible to connect raspicast server');
+  console.error(error);
+  store.dispatch({ error: error.message });
+};
+
 store
   .pluck('castIp')
   .pipe(
@@ -58,7 +70,9 @@ store
 
       socket
         .on('connect', () => socket.emit(Events.INITIAL_STATE))
-        .on('fail', (error: string) => store.dispatch({ error }));
+        .on('connect_failed', handleConnectionError)
+        .on('reconnecting', handleConnectionError)
+        .on('fail', handleError);
     }),
     switchMap(() =>
       merge(
@@ -73,7 +87,6 @@ store
       ),
     ),
   )
-  .subscribe((updates: Partial<State>) => {
-    console.log('updates ', updates);
-    store.dispatch({ setState: updates });
+  .subscribe((setState: Partial<State>) => {
+    store.dispatch({ setState });
   });
