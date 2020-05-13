@@ -10,9 +10,14 @@ const Input = styled.input`
   height: 100px;
   padding: 0 2px;
   flex: 10%;
+  position: relative;
   cursor: grab;
   :active {
     cursor: grabbing;
+  }
+  ::-moz-focus-inner,
+  ::-moz-focus-outer {
+    border: 0;
   }
 `;
 

@@ -9,35 +9,35 @@ import useObservable from '../hooks/use-observable';
 import { store } from '../store';
 
 const PopupLayout = () => {
-  const state = useObservable(store.pick('castIp', 'meta', 'position'));
+  const { castIp, meta, position } = useObservable(
+    store.pick('castIp', 'meta', 'position'),
+  );
 
   const handleSeek = useCallback(
     (percent) => {
-      if (state && state.meta) {
-        store.dispatch({ seek: state.meta.duration * (percent / 100) });
+      if (meta) {
+        store.dispatch({ seek: meta.duration * (percent / 100) });
       }
     },
-    [state],
+    [meta],
   );
 
-  if (!state.castIp) {
+  if (!castIp) {
     return <div>no castIp</div>;
   }
 
-  console.log('rrrr  r r ', state);
-
   return (
     <PopupContainer>
-      {state.meta?.title && <Title>{state.meta.title}</Title>}
-      <MainContainer>
+      {meta?.title && <Title>{meta.title}</Title>}
+      <MainContainer background={meta?.thumbnail}>
         <MainButton />
         <Volume />
       </MainContainer>
-      {!!state.position && state.position !== 0 && state.meta && (
+      {!!position && position !== 0 && meta && (
         <ProgressBar
           onSeek={handleSeek}
-          position={state.position}
-          total={state.meta.duration}
+          position={position}
+          total={meta.duration}
         />
       )}
     </PopupContainer>

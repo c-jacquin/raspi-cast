@@ -8,12 +8,20 @@ import { store } from '../store';
 const Button = styled.button`
   padding: 3px;
   background: transparent;
+  display: block;
   color: var(--text);
   width: 100%;
+  height: 100%;
   flex: 90%;
+  border: none;
   align-self: center;
   text-align: center;
   cursor: pointer;
+  ::-moz-focus-inner,
+  ::-moz-focus-outer {
+    border: 0;
+  }
+  position: relative;
 `;
 
 const MainButton: React.FC = () => {
