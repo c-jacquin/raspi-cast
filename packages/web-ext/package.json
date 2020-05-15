@@ -4,7 +4,8 @@
   "description": "Firefox addon for the cast software, allowing videos to be cast from Firefox to a Raspberry Pi running the picast server.",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "dev": "shx cp -R public/. dist/ && parcel src/*.html",
+    "dev": "shx cp -R public/. dist/ && concurrently \"npm:dev:build\" \"npm:dev:firefox\" ",
+    "dev:build": "parcel src/*.html",
     "dev:firefox": "web-ext run --source-dir ./dist/",
     "build": "shx rm -rf dist && parcel build src/*.html && shx cp -R public/. dist/",
     "lint": "eslint src/**/*.ts",
@@ -35,6 +36,7 @@
     "@types/styled-components": "^5.1.0",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",
+    "concurrently": "^5.2.0",
     "eslint": "^7.0.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.3",

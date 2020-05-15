@@ -1,4 +1,4 @@
-import { PlaybackStatus } from '@raspi-cast/core';
+import { PlaybackStatus, config } from '@raspi-cast/core';
 import { State } from './types';
 
 export const initialState: State = {
@@ -8,4 +8,5 @@ export const initialState: State = {
   canPlay: false,
   canSeek: false,
   isPending: false,
+  port: config.port,
 };

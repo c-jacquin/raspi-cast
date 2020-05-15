@@ -15,7 +15,7 @@ export const store = createStore<State>(initialState)
     cast: () => lens.focusPath('isPending').setValue(true),
     seek: (position) => lens.focusPath('position').setValue(position),
     stop: () => lens.focusPath('position').setValue(0),
-    error: (error) => lens.focusPath('error').setValue(error),
+    error: () => lens.focusPath('isPending').setValue(false),
   }))
   .compute(({ playbackStatus }) => ({
     isPlaying: playbackStatus === PlaybackStatus.PLAYING,
@@ -24,13 +24,17 @@ export const store = createStore<State>(initialState)
   .sideEffects({
     cast: () => {
       let type: CastType;
-      const data = store.currentState.pageUrl;
+      const { pageUrl } = store.currentState;
 
-      if (data && data.includes('youtube')) {
+      if (pageUrl && pageUrl.includes('https://www.youtube.com')) {
         type = CastType.YOUTUBEDL;
         socket.emit(Events.CAST, {
-          data,
+          data: pageUrl,
           type,
+        });
+      } else {
+        store.dispatch({
+          error: 'Unsupported web page (only youtube for now)',
         });
       }
     },
@@ -62,11 +66,11 @@ const handleConnectionError = () => {
 };
 
 store
-  .pluck('castIp')
+  .pick('castIp', 'port')
   .pipe(
-    filter(Boolean),
-    tap((castIp: string) => {
-      socket = io(`http://${castIp}:8181`);
+    filter(({ castIp }) => Boolean(castIp)),
+    tap(async ({ castIp, port }) => {
+      socket = io(`http://${castIp}:${port}`);
 
       socket
         .on('connect', () => socket.emit(Events.INITIAL_STATE))

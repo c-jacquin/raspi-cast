@@ -2,6 +2,7 @@ import { PlayerState } from '@raspi-cast/core';
 
 export interface State extends PlayerState {
   castIp?: string;
+  port?: number;
   pageUrl?: string;
   error?: string;
   isPending: boolean;

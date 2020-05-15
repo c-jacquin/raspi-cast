@@ -22,3 +22,7 @@ export interface PlayerState {
   meta?: CastMeta;
   position?: number;
 }
+
+export interface Config {
+  port: number;
+}

@@ -50,6 +50,7 @@ const OptionsLayout: React.SFC<{}> = () => {
           name="castIp"
           value={state.castIp}
           onChange={handleChange}
+          autoFocus
         />
         <button type="submit">Save</button>
       </form>

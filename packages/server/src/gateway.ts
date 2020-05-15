@@ -35,7 +35,6 @@ class CastGateway
   }
 
   public handleConnection(socket: Socket) {
-    console.log('connexion ! ! !');
     this.sockets.addClient(socket);
   }
 
@@ -45,8 +44,6 @@ class CastGateway
 
   @SubscribeMessage(Events.INITIAL_STATE)
   public async handleInitialState() {
-    console.log('initial state');
-
     return from(this.player.getPosition()).pipe(
       map((position) => ({
         event: Events.INITIAL_STATE,

@@ -5,7 +5,7 @@ interface PopupContainerProps {
 }
 
 export const PopupContainer = styled.div`
-  width: 300px;
+  width: 400px;
   min-height: 200px;
   color: var(--text);
   display: flex;
@@ -31,6 +31,6 @@ export const MainContainer = styled.div<PopupContainerProps>`
     height: 100%;
     background: ${({ background }) =>
       background ? `url(${background})` : 'var(--background)'};
-    filter: blur(1px);
+    filter: blur(2px) opacity(0.4);
   }
 `;

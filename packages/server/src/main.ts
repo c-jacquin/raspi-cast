@@ -1,15 +1,9 @@
 import { spawn } from 'child_process';
-import dotenv from 'dotenv';
-import path from 'path';
+import { NestFactory } from '@nestjs/core';
+import { Config } from '@raspi-cast/core';
 import 'reflect-metadata';
 
-dotenv.config({
-  path: path.join(process.cwd(), `env/${process.env.NODE_ENV}.env`),
-});
-
-import { NestFactory } from '@nestjs/core';
-
-import { CastModule } from './cast.module';
+import { CastModule } from './module';
 import Player from './services/Player';
 import Screen from './services/Screen';
 
@@ -21,9 +15,10 @@ import Screen from './services/Screen';
     const app = await NestFactory.create(CastModule, {});
     const screen = app.get<Screen>(Screen);
     const player = app.get<Player>(Player);
+    const config = app.get<Config>('config');
 
     await player.init();
-    await app.listen(8181);
+    await app.listen(config.port);
 
     if (process.env.NODE_ENV === 'production') {
       spawn('setterm', ['-powersave', 'off', '-blank', '0']);
